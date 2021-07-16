@@ -52,7 +52,7 @@ void dct(uint8_t *image, int width, int height) {
 
       // print_matrix(block, 8, 8);
 
-      naive(block, output);
+      unoptimized_algo(block, output);
       print_matrix(output, 8, 8);
     } 
   }
