@@ -3,21 +3,24 @@
 #include <stdint.h>
 #include <math.h>
 
+#define C1 32138
+#define C2 30274
+#define C3 27246
+#define C4 23170
+#define C5 18205
+#define C6 12540
+#define C7 6393
+
+
 int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
-  double C1 = cos(1*M_PI/16);
-  double C2 = cos(2*M_PI/16);
-  double C3 = cos(3*M_PI/16);
-  double C4 = cos(4*M_PI/16);
-  double C5 = cos(5*M_PI/16);
-  double C6 = cos(6*M_PI/16);
-  double C7 = cos(7*M_PI/16);
-  double C[8][8], CT[8][8];
-  double output[8][8];
+ 
+  int C[8][8], CT[8][8];
+  int output[8][8];
   for(int i = 0; i < 8; i++) {
     for(int j = 0; j < 8; j++) {
-      C[i][j] = 0.;
-      CT[i][j] = 0.;
-      output[i][j] = 0.;
+      C[i][j] = 0;
+      CT[i][j] = 0;
+      output[i][j] = 0;
     }
   }
   C[0][0] = C4;
@@ -59,7 +62,7 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
     }
   }
 
-  double input[8][8];
+  int input[8][8];
   // printf("input:\n");
   for(int i = 0; i < 8; i++) {
     for(int j = 0; j < 8; j++) {
@@ -68,10 +71,10 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
   }
 
   for(int i = 0; i < 8; i++) { // row 0
-    output[0][i] += C[0][0] * (input[0][i] + input[7][i]);
-    output[0][i] += C[0][1] * (input[1][i] + input[6][i]);
-    output[0][i] += C[0][2] * (input[2][i] + input[5][i]);
-    output[0][i] += C[0][3] * (input[3][i] + input[4][i]);
+    output[0][i] += (C[0][0] * (input[0][i] + input[7][i])) >> 15;
+    output[0][i] += (C[0][1] * (input[1][i] + input[6][i])) >> 15;
+    output[0][i] += (C[0][2] * (input[2][i] + input[5][i])) >> 15;
+    output[0][i] += (C[0][3] * (input[3][i] + input[4][i])) >> 15;
 
     // output[0][i] += C[0][4] * (input[0][i] - input[7][i]);
     // output[0][i] += C[0][5] * (input[1][i] - input[6][i]);
@@ -85,17 +88,17 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
     // output[1][i] += C[4][2] * (input[2][i] + input[5][i]);
     // output[1][i] += C[4][3] * (input[3][i] + input[4][i]);
 
-    output[1][i] += C[4][4] * (input[0][i] - input[7][i]);
-    output[1][i] += C[4][5] * (input[1][i] - input[6][i]);
-    output[1][i] += C[4][6] * (input[2][i] - input[5][i]);
-    output[1][i] += C[4][7] * (input[3][i] - input[4][i]);
+    output[1][i] += (C[4][4] * (input[0][i] - input[7][i])) >> 15;
+    output[1][i] += (C[4][5] * (input[1][i] - input[6][i])) >> 15;
+    output[1][i] += (C[4][6] * (input[2][i] - input[5][i])) >> 15;
+    output[1][i] += (C[4][7] * (input[3][i] - input[4][i])) >> 15;
   }
 
   for(int i = 0; i < 8; i++) { // row 2
-    output[2][i] += C[1][0] * (input[0][i] + input[7][i]);
-    output[2][i] += C[1][1] * (input[1][i] + input[6][i]);
-    output[2][i] += C[1][2] * (input[2][i] + input[5][i]);
-    output[2][i] += C[1][3] * (input[3][i] + input[4][i]);
+    output[2][i] += (C[1][0] * (input[0][i] + input[7][i])) >> 15;
+    output[2][i] += (C[1][1] * (input[1][i] + input[6][i])) >> 15;
+    output[2][i] += (C[1][2] * (input[2][i] + input[5][i])) >> 15;
+    output[2][i] += (C[1][3] * (input[3][i] + input[4][i])) >> 15;
 
     // output[2][i] += C[1][4] * (input[0][i] - input[7][i]);
     // output[2][i] += C[1][5] * (input[1][i] - input[6][i]);
@@ -109,17 +112,17 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
     // output[3][i] += C[5][2] * (input[2][i] + input[5][i]);
     // output[3][i] += C[5][3] * (input[3][i] + input[4][i]);
 
-    output[3][i] += C[5][4] * (input[0][i] - input[7][i]);
-    output[3][i] += C[5][5] * (input[1][i] - input[6][i]);
-    output[3][i] += C[5][6] * (input[2][i] - input[5][i]);
-    output[3][i] += C[5][7] * (input[3][i] - input[4][i]);
+    output[3][i] += (C[5][4] * (input[0][i] - input[7][i])) >> 15;
+    output[3][i] += (C[5][5] * (input[1][i] - input[6][i])) >> 15;
+    output[3][i] += (C[5][6] * (input[2][i] - input[5][i])) >> 15;
+    output[3][i] += (C[5][7] * (input[3][i] - input[4][i])) >> 15;
   }
 
   for(int i = 0; i < 8; i++) { // row 4
-    output[4][i] += C[2][0] * (input[0][i] + input[7][i]);
-    output[4][i] += C[2][1] * (input[1][i] + input[6][i]);
-    output[4][i] += C[2][2] * (input[2][i] + input[5][i]);
-    output[4][i] += C[2][3] * (input[3][i] + input[4][i]);
+    output[4][i] += (C[2][0] * (input[0][i] + input[7][i])) >> 15;
+    output[4][i] += (C[2][1] * (input[1][i] + input[6][i])) >> 15;
+    output[4][i] += (C[2][2] * (input[2][i] + input[5][i])) >> 15;
+    output[4][i] += (C[2][3] * (input[3][i] + input[4][i])) >> 15;
 
     // output[4][i] += C[2][4] * (input[0][i] - input[7][i]);
     // output[4][i] += C[2][5] * (input[1][i] - input[6][i]);
@@ -133,17 +136,17 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
     // output[5][i] += C[6][2] * (input[2][i] + input[5][i]);
     // output[5][i] += C[6][3] * (input[3][i] + input[4][i]);
 
-    output[5][i] += C[6][4] * (input[0][i] - input[7][i]);
-    output[5][i] += C[6][5] * (input[1][i] - input[6][i]);
-    output[5][i] += C[6][6] * (input[2][i] - input[5][i]);
-    output[5][i] += C[6][7] * (input[3][i] - input[4][i]);
+    output[5][i] += (C[6][4] * (input[0][i] - input[7][i])) >> 15;
+    output[5][i] += (C[6][5] * (input[1][i] - input[6][i])) >> 15;
+    output[5][i] += (C[6][6] * (input[2][i] - input[5][i])) >> 15;
+    output[5][i] += (C[6][7] * (input[3][i] - input[4][i])) >> 15;
   }
 
   for(int i = 0; i < 8; i++) { // row 6
-    output[6][i] += C[3][0] * (input[0][i] + input[7][i]);
-    output[6][i] += C[3][1] * (input[1][i] + input[6][i]);
-    output[6][i] += C[3][2] * (input[2][i] + input[5][i]);
-    output[6][i] += C[3][3] * (input[3][i] + input[4][i]);
+    output[6][i] += (C[3][0] * (input[0][i] + input[7][i])) >> 15;
+    output[6][i] += (C[3][1] * (input[1][i] + input[6][i])) >> 15;
+    output[6][i] += (C[3][2] * (input[2][i] + input[5][i])) >> 15;
+    output[6][i] += (C[3][3] * (input[3][i] + input[4][i])) >> 15;
 
     // output[6][i] += C[3][4] * (input[0][i] - input[7][i]);
     // output[6][i] += C[3][5] * (input[1][i] - input[6][i]);
@@ -157,13 +160,13 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
     // output[7][i] += C[7][2] * (input[2][i] + input[5][i]);
     // output[7][i] += C[7][3] * (input[3][i] + input[4][i]);
 
-    output[7][i] += C[7][4] * (input[0][i] - input[7][i]);
-    output[7][i] += C[7][5] * (input[1][i] - input[6][i]);
-    output[7][i] += C[7][6] * (input[2][i] - input[5][i]);
-    output[7][i] += C[7][7] * (input[3][i] - input[4][i]);
+    output[7][i] += (C[7][4] * (input[0][i] - input[7][i])) >> 15;
+    output[7][i] += (C[7][5] * (input[1][i] - input[6][i])) >> 15;
+    output[7][i] += (C[7][6] * (input[2][i] - input[5][i])) >> 15;
+    output[7][i] += (C[7][7] * (input[3][i] - input[4][i])) >> 15;
   }
 
-  double Ctimesx[8][8];
+  int Ctimesx[8][8];
   for(int i = 0; i < 8; i++) {
     for(int j = 0; j < 8; j++) {
       Ctimesx[i][j] = output[i][j];
@@ -172,10 +175,10 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
   }
 
   for(int i = 0; i < 8; i++) { // column 0
-    output[i][0] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][0];
-    output[i][0] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][0];
-    output[i][0] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][0];
-    output[i][0] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][0];
+    output[i][0] += ((Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][0]) >> 15;
+    output[i][0] += ((Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][0]) >> 15;
+    output[i][0] += ((Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][0]) >> 15;
+    output[i][0] += ((Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][0]) >> 15;
 
     // output[i][0] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][0];
     // output[i][0] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][0];
@@ -191,19 +194,19 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
     // output[i][1] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][4];
     // output[i][1] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][4];
 
-    output[i][1] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][4];
-    output[i][1] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][4];
-    output[i][1] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][4];
-    output[i][1] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][4];
+    output[i][1] += ((Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][4]) >> 15;
+    output[i][1] += ((Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][4]) >> 15;
+    output[i][1] += ((Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][4]) >> 15;
+    output[i][1] += ((Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][4]) >> 15;
 
     output[i][1] /= 4;
   }
 
   for(int i = 0; i < 8; i++) { // column 2
-    output[i][2] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][1];
-    output[i][2] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][1];
-    output[i][2] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][1];
-    output[i][2] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][1];
+    output[i][2] += ((Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][1]) >> 15;
+    output[i][2] += ((Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][1]) >> 15;
+    output[i][2] += ((Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][1]) >> 15;
+    output[i][2] += ((Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][1]) >> 15;
 
     // output[i][2] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][1];
     // output[i][2] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][1];
@@ -219,19 +222,19 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
     // output[i][3] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][5];
     // output[i][3] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][5];
 
-    output[i][3] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][5];
-    output[i][3] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][5];
-    output[i][3] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][5];
-    output[i][3] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][5];
+    output[i][3] += ((Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][5]) >> 15;
+    output[i][3] += ((Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][5]) >> 15;
+    output[i][3] += ((Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][5]) >> 15;
+    output[i][3] += ((Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][5]) >> 15;
 
     output[i][3] /= 4;
   }
 
   for(int i = 0; i < 8; i++) { // column 4
-    output[i][4] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][2];
-    output[i][4] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][2];
-    output[i][4] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][2];
-    output[i][4] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][2];
+    output[i][4] += ((Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][2]) >> 15;
+    output[i][4] += ((Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][2]) >> 15;
+    output[i][4] += ((Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][2]) >> 15;
+    output[i][4] += ((Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][2]) >> 15;
 
     // output[i][4] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][2];
     // output[i][4] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][2];
@@ -247,19 +250,19 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
     // output[i][5] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][6];
     // output[i][5] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][6];
 
-    output[i][5] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][6];
-    output[i][5] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][6];
-    output[i][5] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][6];
-    output[i][5] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][6];
+    output[i][5] += ((Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][6]) >> 15;
+    output[i][5] += ((Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][6]) >> 15;
+    output[i][5] += ((Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][6]) >> 15;
+    output[i][5] += ((Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][6]) >> 15;
 
     output[i][5] /= 4;
   }
 
   for(int i = 0; i < 8; i++) { // column 6
-    output[i][6] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][3];
-    output[i][6] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][3];
-    output[i][6] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][3];
-    output[i][6] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][3];
+    output[i][6] += ((Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][3]) >> 15;
+    output[i][6] += ((Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][3]) >> 15;
+    output[i][6] += ((Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][3]) >> 15;
+    output[i][6] += ((Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][3]) >> 15;
 
     // output[i][6] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][3];
     // output[i][6] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][3];
@@ -275,10 +278,10 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
     // output[i][7] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][7];
     // output[i][7] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][7];
 
-    output[i][7] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][7];
-    output[i][7] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][7];
-    output[i][7] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][7];
-    output[i][7] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][7];
+    output[i][7] += ((Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][7]) >> 15;
+    output[i][7] += ((Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][7]) >> 15;
+    output[i][7] += ((Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][7]) >> 15;
+    output[i][7] += ((Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][7]) >> 15;
 
     output[i][7] /= 4;
   }
