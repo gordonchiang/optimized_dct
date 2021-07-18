@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <math.h>
 
 #define C1 32138
 #define C2 30274
@@ -11,46 +10,33 @@
 #define C6 12540
 #define C7 6393
 
-
-int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
- 
-  int output[8][8];
-
-  int input[8][8];
-  for(int i = 0; i < 8; i++) {
-    for(int j = 0; j < 8; j++) {
-      input[i][j] = input2[i*8+j];
-    }
-  }
-
+int unoptimized_algo(int input[8][8], int output[8][8]) {
   int x, y;
   for(y = 0; y < 2; y++) {
     for(x = 0; x < 8; x++) {
-      int temp1;
-      int temp2;
-      int temp3;
-      int temp4;
-      //printf("%d %d %d %d %d %d %d %d This is input\n", input[x][0], input[x][1], input[x][2], input[x][3], input[x][4], input[x][5], input[x][6], input[x][7]);
+      int temp1, temp2, temp3, temp4;
+
       temp1 = input[0][x] + input[7][x];
       temp2 = input[1][x] + input[6][x];
       temp3 = input[2][x] + input[5][x];
       temp4 = input[3][x] + input[4][x];
 
-      output[x][0] = ((C4 * temp1) +  (C4 * temp2) + (C4 * temp3) + (C4 * temp4)) >> 15;
-      output[x][2] = ((C2 * temp1) +  (C6 * temp2) + (-C6 * temp3) + (-C2 * temp4)) >> 15;
-      output[x][4] = ((C4 * temp1) +  (-C4 * temp2) + (-C4 * temp3) + (C4 * temp4)) >> 15;
-      output[x][6] = ((C6 * temp1) +  (-C2 * temp2) + (C2 * temp3) + (-C6 * temp4)) >> 15;
+      output[x][0] = ((C4 * temp1) + (C4 * temp2) + (C4 * temp3) + (C4 * temp4)) >> 15;
+      output[x][2] = ((C2 * temp1) + (C6 * temp2) + (-C6 * temp3) + (-C2 * temp4)) >> 15;
+      output[x][4] = ((C4 * temp1) + (-C4 * temp2) + (-C4 * temp3) + (C4 * temp4)) >> 15;
+      output[x][6] = ((C6 * temp1) + (-C2 * temp2) + (C2 * temp3) + (-C6 * temp4)) >> 15;
 
       temp1 = input[0][x] - input[7][x];
       temp2 = input[1][x] - input[6][x];
       temp3 = input[2][x] - input[5][x];
       temp4 = input[3][x] - input[4][x];
 
-      output[x][1] = ((C1 * temp1) +  (C3 * temp2) + (C5 * temp3) + (C7 * temp4)) >> 15;
-      output[x][3] = ((C3 * temp1) +  (-C7 * temp2) + (-C1 * temp3) + (-C5 * temp4)) >> 15;
-      output[x][5] = ((C5 * temp1) +  (-C1 * temp2) + (C7 * temp3) + (C3 * temp4)) >> 15;
-      output[x][7] = ((C7 * temp1) +  (-C5 * temp2) + (C3 * temp3) + (-C1 * temp4)) >> 15;
+      output[x][1] = ((C1 * temp1) + (C3 * temp2) + (C5 * temp3) + (C7 * temp4)) >> 15;
+      output[x][3] = ((C3 * temp1) + (-C7 * temp2) + (-C1 * temp3) + (-C5 * temp4)) >> 15;
+      output[x][5] = ((C5 * temp1) + (-C1 * temp2) + (C7 * temp3) + (C3 * temp4)) >> 15;
+      output[x][7] = ((C7 * temp1) + (-C5 * temp2) + (C3 * temp3) + (-C1 * temp4)) >> 15;
     }
+
     for(int i = 0; i < 8; i++) {
       for(int j = 0; j < 8; j++){
         input[i][j] = output[i][j];
@@ -60,7 +46,7 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
 
   for(int i = 0; i < 8; i++) {
     for(int j = 0; j < 8; j++) {
-      output2[i][j] = output[i][j] >> 2;
+      output[i][j] >>= 2;
     }
   }
 
