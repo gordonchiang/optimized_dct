@@ -24,17 +24,74 @@ int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
   }
 
   int x, y;
-  for(y = 0; y < 2; y++) {
+  for(y = 2; y != 0; y--) {
     for(x = 0; x < 8; x++) {
       int temp1;
       int temp2;
       int temp3;
       int temp4;
-      //printf("%d %d %d %d %d %d %d %d This is input\n", input[x][0], input[x][1], input[x][2], input[x][3], input[x][4], input[x][5], input[x][6], input[x][7]);
       temp1 = input[0][x] + input[7][x];
       temp2 = input[1][x] + input[6][x];
       temp3 = input[2][x] + input[5][x];
       temp4 = input[3][x] + input[4][x];
+
+      /*
+      * 
+      * int temp[4];
+      * temp[0] = input[0][x] + input[7][x];
+      * temp[1] = input[1][x] + input[6][x];
+      * temp[2] = input[2][x] + input[5][x];
+      * temp[3] = input[3][x] + input[4][x];
+      *   
+      * int arr1[4] = {C4, C4, C4, C4};
+      * int arr2[4] = {C2, C6, -C6, -C2};
+      * int arr3[4] = {C4, -C4, -C4, C4};
+      * int arr4[4] = {C6, -C2, C2, -C6};
+      * 
+      * int16x4_t outpurMul1, outpurMul2, outpurMul3, outpurMul4, inputInitial, cArr1, cArr2, cArr3, cArr4;
+      * 
+      * inputIntial = vld1_s16(temp);
+      * cArr1 = vld1_s16(arr1);
+      * cArr2 = vld1_s16(arr2);
+      * cArr3 = vld1_s16(arr3);
+      * cArr4 = vld1_s16(arr4);
+      * 
+      * 
+      * // This is C[x] * temp1, C[x] * temp2, C[x] * temp3, C[x] * temp4
+      * outputMul1 = vmul_s16(cArr1, inputIntial);
+      * outputMul2 = vmul_s16(cArr2, inputIntial);
+      * outputMul3 = vmul_s16(cArr3, inputIntial);
+      * outputMul4 = vmul_s16(cArr4, inputIntial);
+      * 
+      * 
+      * 
+      * // This is the summation of each of the mulitplcation Steps I honestly don't know if this actually saves any time at all
+      * int16x4_t addedDRegisters;
+      * int32x2_t pairwiseAddedOnce;
+      * int64x1_t pairwiseAddedTwice;
+      * 
+      * addedDRegisters = vadd_s16(vget_low_s16(outputMul1), vget_high_s16(outputMul1));
+      * pairwiseAddedOnce = vpaddl_s16(addedDRegisters);
+      * pairwiseAddedTwice = vpaddl_s32(pairwiseAddedOnce);
+      * output[x][0] = (int)vget_lane_s64(pairwiseAddedTwice, 0);
+      *
+      * addedDRegisters = vadd_s16(vget_low_s16(outputMul2), vget_high_s16(outputMul2));
+      * pairwiseAddedOnce = vpaddl_s16(addedDRegisters);
+      * pairwiseAddedTwice = vpaddl_s32(pairwiseAddedOnce);
+      * output[x][2] = (int)vget_lane_s64(pairwiseAddedTwice, 0);
+      * 
+      * addedDRegisters = vadd_s16(vget_low_s16(outputMul3), vget_high_s16(outputMul3));
+      * pairwiseAddedOnce = vpaddl_s16(addedDRegisters);
+      * pairwiseAddedTwice = vpaddl_s32(pairwiseAddedOnce);
+      * output[x][4] = (int)vget_lane_s64(pairwiseAddedTwice, 0);
+      * 
+      * addedDRegisters = vadd_s16(vget_low_s16(outputMul3), vget_high_s16(outputMul3));
+      * pairwiseAddedOnce = vpaddl_s16(addedDRegisters);
+      * pairwiseAddedTwice = vpaddl_s32(pairwiseAddedOnce);
+      * output[x][6] = (int)vget_lane_s64(pairwiseAddedTwice, 0);
+      * 
+      */
+
 
       output[x][0] = ((C4 * temp1) +  (C4 * temp2) + (C4 * temp3) + (C4 * temp4)) >> 15;
       output[x][2] = ((C2 * temp1) +  (C6 * temp2) + (-C6 * temp3) + (-C2 * temp4)) >> 15;
