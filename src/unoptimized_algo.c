@@ -1,291 +1,110 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <math.h>
 
-int unoptimized_algo(uint8_t *input2, int output2[8][8]) {
-  double C1 = cos(1*M_PI/16);
-  double C2 = cos(2*M_PI/16);
-  double C3 = cos(3*M_PI/16);
-  double C4 = cos(4*M_PI/16);
-  double C5 = cos(5*M_PI/16);
-  double C6 = cos(6*M_PI/16);
-  double C7 = cos(7*M_PI/16);
-  double C[8][8], CT[8][8];
-  double output[8][8];
-  for(int i = 0; i < 8; i++) {
-    for(int j = 0; j < 8; j++) {
-      C[i][j] = 0.;
-      CT[i][j] = 0.;
-      output[i][j] = 0.;
+#define C1 32138
+#define C2 30274
+#define C3 27246
+#define C4 23170
+#define C5 18205
+#define C6 12540
+#define C7 6393
+
+int unoptimized_algo(int input[8][8], int output[8][8]) {
+  int x, y;
+  for(y = 2; y != 0; y--) {
+    for(x = 0; x < 8; x++) {
+      int temp1, temp2, temp3, temp4;
+
+      temp1 = input[0][x] + input[7][x];
+      temp2 = input[1][x] + input[6][x];
+      temp3 = input[2][x] + input[5][x];
+      temp4 = input[3][x] + input[4][x];
+
+      /*
+      * 
+      * int temp[4];
+      * temp[0] = input[0][x] + input[7][x];
+      * temp[1] = input[1][x] + input[6][x];
+      * temp[2] = input[2][x] + input[5][x];
+      * temp[3] = input[3][x] + input[4][x];
+      *   
+      * int arr1[4] = {C4, C4, C4, C4};
+      * int arr2[4] = {C2, C6, -C6, -C2};
+      * int arr3[4] = {C4, -C4, -C4, C4};
+      * int arr4[4] = {C6, -C2, C2, -C6};
+      * 
+      * int16x4_t outpurMul1, outpurMul2, outpurMul3, outpurMul4, inputInitial, cArr1, cArr2, cArr3, cArr4;
+      * 
+      * inputIntial = vld1_s16(temp);
+      * cArr1 = vld1_s16(arr1);
+      * cArr2 = vld1_s16(arr2);
+      * cArr3 = vld1_s16(arr3);
+      * cArr4 = vld1_s16(arr4);
+      * 
+      * 
+      * // This is C[x] * temp1, C[x] * temp2, C[x] * temp3, C[x] * temp4
+      * outputMul1 = vmul_s16(cArr1, inputIntial);
+      * outputMul2 = vmul_s16(cArr2, inputIntial);
+      * outputMul3 = vmul_s16(cArr3, inputIntial);
+      * outputMul4 = vmul_s16(cArr4, inputIntial);
+      * 
+      * 
+      * 
+      * // This is the summation of each of the mulitplcation Steps I honestly don't know if this actually saves any time at all
+      * int16x4_t addedDRegisters;
+      * int32x2_t pairwiseAddedOnce;
+      * int64x1_t pairwiseAddedTwice;
+      * 
+      * addedDRegisters = vadd_s16(vget_low_s16(outputMul1), vget_high_s16(outputMul1));
+      * pairwiseAddedOnce = vpaddl_s16(addedDRegisters);
+      * pairwiseAddedTwice = vpaddl_s32(pairwiseAddedOnce);
+      * output[x][0] = (int)vget_lane_s64(pairwiseAddedTwice, 0);
+      *
+      * addedDRegisters = vadd_s16(vget_low_s16(outputMul2), vget_high_s16(outputMul2));
+      * pairwiseAddedOnce = vpaddl_s16(addedDRegisters);
+      * pairwiseAddedTwice = vpaddl_s32(pairwiseAddedOnce);
+      * output[x][2] = (int)vget_lane_s64(pairwiseAddedTwice, 0);
+      * 
+      * addedDRegisters = vadd_s16(vget_low_s16(outputMul3), vget_high_s16(outputMul3));
+      * pairwiseAddedOnce = vpaddl_s16(addedDRegisters);
+      * pairwiseAddedTwice = vpaddl_s32(pairwiseAddedOnce);
+      * output[x][4] = (int)vget_lane_s64(pairwiseAddedTwice, 0);
+      * 
+      * addedDRegisters = vadd_s16(vget_low_s16(outputMul3), vget_high_s16(outputMul3));
+      * pairwiseAddedOnce = vpaddl_s16(addedDRegisters);
+      * pairwiseAddedTwice = vpaddl_s32(pairwiseAddedOnce);
+      * output[x][6] = (int)vget_lane_s64(pairwiseAddedTwice, 0);
+      * 
+      */
+
+
+      output[x][0] = ((C4 * temp1) +  (C4 * temp2) + (C4 * temp3) + (C4 * temp4)) >> 15;
+      output[x][2] = ((C2 * temp1) +  (C6 * temp2) + (-C6 * temp3) + (-C2 * temp4)) >> 15;
+      output[x][4] = ((C4 * temp1) +  (-C4 * temp2) + (-C4 * temp3) + (C4 * temp4)) >> 15;
+      output[x][6] = ((C6 * temp1) +  (-C2 * temp2) + (C2 * temp3) + (-C6 * temp4)) >> 15;
+
+      temp1 = input[0][x] - input[7][x];
+      temp2 = input[1][x] - input[6][x];
+      temp3 = input[2][x] - input[5][x];
+      temp4 = input[3][x] - input[4][x];
+
+      output[x][1] = ((C1 * temp1) + (C3 * temp2) + (C5 * temp3) + (C7 * temp4)) >> 15;
+      output[x][3] = ((C3 * temp1) + (-C7 * temp2) + (-C1 * temp3) + (-C5 * temp4)) >> 15;
+      output[x][5] = ((C5 * temp1) + (-C1 * temp2) + (C7 * temp3) + (C3 * temp4)) >> 15;
+      output[x][7] = ((C7 * temp1) + (-C5 * temp2) + (C3 * temp3) + (-C1 * temp4)) >> 15;
     }
-  }
-  C[0][0] = C4;
-  C[0][1] = C4;
-  C[0][2] = C4;
-  C[0][3] = C4;
-  C[1][0] = C2;
-  C[1][1] = C6;
-  C[1][2] = -C6;
-  C[1][3] = -C2;
-  C[2][0] = C4;
-  C[2][1] = -C4;
-  C[2][2] = -C4;
-  C[2][3] = C4;
-  C[3][0] = C6;
-  C[3][1] = -C2;
-  C[3][2] = C2;
-  C[3][3] = -C6;
-  C[4][4] = C1;
-  C[4][5] = C3;
-  C[4][6] = C5;
-  C[4][7] = C7;
-  C[5][4] = C3;
-  C[5][5] = -C7;
-  C[5][6] = -C1;
-  C[5][7] = -C5;
-  C[6][4] = C5;
-  C[6][5] = -C1;
-  C[6][6] = C7;
-  C[6][7] = C3;
-  C[7][4] = C7;
-  C[7][5] = -C5;
-  C[7][6] = C3;
-  C[7][7] = -C1;
 
-  for(int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      CT[i][j] = C[j][i];
+    for(int i = 0; i < 8; i++) {
+      for(int j = 0; j < 8; j++){
+        input[i][j] = output[i][j];
+      }
     }
-  }
-
-  double input[8][8];
-  // printf("input:\n");
-  for(int i = 0; i < 8; i++) {
-    for(int j = 0; j < 8; j++) {
-      input[i][j] = input2[i*8+j];
-    }
-  }
-
-  for(int i = 0; i < 8; i++) { // row 0
-    output[0][i] += C[0][0] * (input[0][i] + input[7][i]);
-    output[0][i] += C[0][1] * (input[1][i] + input[6][i]);
-    output[0][i] += C[0][2] * (input[2][i] + input[5][i]);
-    output[0][i] += C[0][3] * (input[3][i] + input[4][i]);
-
-    // output[0][i] += C[0][4] * (input[0][i] - input[7][i]);
-    // output[0][i] += C[0][5] * (input[1][i] - input[6][i]);
-    // output[0][i] += C[0][6] * (input[2][i] - input[5][i]);
-    // output[0][i] += C[0][7] * (input[3][i] - input[4][i]);
-  }
-
-  for(int i = 0; i < 8; i++) { // row 1
-    // output[1][i] += C[4][0] * (input[0][i] + input[7][i]);
-    // output[1][i] += C[4][1] * (input[1][i] + input[6][i]);
-    // output[1][i] += C[4][2] * (input[2][i] + input[5][i]);
-    // output[1][i] += C[4][3] * (input[3][i] + input[4][i]);
-
-    output[1][i] += C[4][4] * (input[0][i] - input[7][i]);
-    output[1][i] += C[4][5] * (input[1][i] - input[6][i]);
-    output[1][i] += C[4][6] * (input[2][i] - input[5][i]);
-    output[1][i] += C[4][7] * (input[3][i] - input[4][i]);
-  }
-
-  for(int i = 0; i < 8; i++) { // row 2
-    output[2][i] += C[1][0] * (input[0][i] + input[7][i]);
-    output[2][i] += C[1][1] * (input[1][i] + input[6][i]);
-    output[2][i] += C[1][2] * (input[2][i] + input[5][i]);
-    output[2][i] += C[1][3] * (input[3][i] + input[4][i]);
-
-    // output[2][i] += C[1][4] * (input[0][i] - input[7][i]);
-    // output[2][i] += C[1][5] * (input[1][i] - input[6][i]);
-    // output[2][i] += C[1][6] * (input[2][i] - input[5][i]);
-    // output[2][i] += C[1][7] * (input[3][i] - input[4][i]);
-  }
-
-  for(int i = 0; i < 8; i++) { // row 3
-    // output[3][i] += C[5][0] * (input[0][i] + input[7][i]);
-    // output[3][i] += C[5][1] * (input[1][i] + input[6][i]);
-    // output[3][i] += C[5][2] * (input[2][i] + input[5][i]);
-    // output[3][i] += C[5][3] * (input[3][i] + input[4][i]);
-
-    output[3][i] += C[5][4] * (input[0][i] - input[7][i]);
-    output[3][i] += C[5][5] * (input[1][i] - input[6][i]);
-    output[3][i] += C[5][6] * (input[2][i] - input[5][i]);
-    output[3][i] += C[5][7] * (input[3][i] - input[4][i]);
-  }
-
-  for(int i = 0; i < 8; i++) { // row 4
-    output[4][i] += C[2][0] * (input[0][i] + input[7][i]);
-    output[4][i] += C[2][1] * (input[1][i] + input[6][i]);
-    output[4][i] += C[2][2] * (input[2][i] + input[5][i]);
-    output[4][i] += C[2][3] * (input[3][i] + input[4][i]);
-
-    // output[4][i] += C[2][4] * (input[0][i] - input[7][i]);
-    // output[4][i] += C[2][5] * (input[1][i] - input[6][i]);
-    // output[4][i] += C[2][6] * (input[2][i] - input[5][i]);
-    // output[4][i] += C[2][7] * (input[3][i] - input[4][i]);
-  }
-
-  for(int i = 0; i < 8; i++) { // row 5
-    // output[5][i] += C[6][0] * (input[0][i] + input[7][i]);
-    // output[5][i] += C[6][1] * (input[1][i] + input[6][i]);
-    // output[5][i] += C[6][2] * (input[2][i] + input[5][i]);
-    // output[5][i] += C[6][3] * (input[3][i] + input[4][i]);
-
-    output[5][i] += C[6][4] * (input[0][i] - input[7][i]);
-    output[5][i] += C[6][5] * (input[1][i] - input[6][i]);
-    output[5][i] += C[6][6] * (input[2][i] - input[5][i]);
-    output[5][i] += C[6][7] * (input[3][i] - input[4][i]);
-  }
-
-  for(int i = 0; i < 8; i++) { // row 6
-    output[6][i] += C[3][0] * (input[0][i] + input[7][i]);
-    output[6][i] += C[3][1] * (input[1][i] + input[6][i]);
-    output[6][i] += C[3][2] * (input[2][i] + input[5][i]);
-    output[6][i] += C[3][3] * (input[3][i] + input[4][i]);
-
-    // output[6][i] += C[3][4] * (input[0][i] - input[7][i]);
-    // output[6][i] += C[3][5] * (input[1][i] - input[6][i]);
-    // output[6][i] += C[3][6] * (input[2][i] - input[5][i]);
-    // output[6][i] += C[3][7] * (input[3][i] - input[4][i]);
-  }
-
-  for(int i = 0; i < 8; i++) { // row 7
-    // output[7][i] += C[7][0] * (input[0][i] + input[7][i]);
-    // output[7][i] += C[7][1] * (input[1][i] + input[6][i]);
-    // output[7][i] += C[7][2] * (input[2][i] + input[5][i]);
-    // output[7][i] += C[7][3] * (input[3][i] + input[4][i]);
-
-    output[7][i] += C[7][4] * (input[0][i] - input[7][i]);
-    output[7][i] += C[7][5] * (input[1][i] - input[6][i]);
-    output[7][i] += C[7][6] * (input[2][i] - input[5][i]);
-    output[7][i] += C[7][7] * (input[3][i] - input[4][i]);
-  }
-
-  double Ctimesx[8][8];
-  for(int i = 0; i < 8; i++) {
-    for(int j = 0; j < 8; j++) {
-      Ctimesx[i][j] = output[i][j];
-      output[i][j] = 0;
-    }
-  }
-
-  for(int i = 0; i < 8; i++) { // column 0
-    output[i][0] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][0];
-    output[i][0] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][0];
-    output[i][0] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][0];
-    output[i][0] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][0];
-
-    // output[i][0] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][0];
-    // output[i][0] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][0];
-    // output[i][0] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][0];
-    // output[i][0] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][0];
-
-    output[i][0] /= 4;
-  }
-
-  for(int i = 0; i < 8; i++) { // column 1
-    // output[i][1] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][4];
-    // output[i][1] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][4];
-    // output[i][1] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][4];
-    // output[i][1] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][4];
-
-    output[i][1] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][4];
-    output[i][1] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][4];
-    output[i][1] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][4];
-    output[i][1] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][4];
-
-    output[i][1] /= 4;
-  }
-
-  for(int i = 0; i < 8; i++) { // column 2
-    output[i][2] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][1];
-    output[i][2] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][1];
-    output[i][2] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][1];
-    output[i][2] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][1];
-
-    // output[i][2] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][1];
-    // output[i][2] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][1];
-    // output[i][2] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][1];
-    // output[i][2] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][1];
-
-    output[i][2] /= 4;
-  }
-
-    for(int i = 0; i < 8; i++) { // column 3
-    // output[i][3] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][5];
-    // output[i][3] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][5];
-    // output[i][3] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][5];
-    // output[i][3] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][5];
-
-    output[i][3] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][5];
-    output[i][3] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][5];
-    output[i][3] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][5];
-    output[i][3] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][5];
-
-    output[i][3] /= 4;
-  }
-
-  for(int i = 0; i < 8; i++) { // column 4
-    output[i][4] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][2];
-    output[i][4] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][2];
-    output[i][4] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][2];
-    output[i][4] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][2];
-
-    // output[i][4] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][2];
-    // output[i][4] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][2];
-    // output[i][4] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][2];
-    // output[i][4] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][2];
-
-    output[i][4] /= 4;
-  }
-
-  for(int i = 0; i < 8; i++) { // column 5
-    // output[i][5] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][6];
-    // output[i][5] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][6];
-    // output[i][5] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][6];
-    // output[i][5] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][6];
-
-    output[i][5] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][6];
-    output[i][5] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][6];
-    output[i][5] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][6];
-    output[i][5] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][6];
-
-    output[i][5] /= 4;
-  }
-
-  for(int i = 0; i < 8; i++) { // column 6
-    output[i][6] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][3];
-    output[i][6] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][3];
-    output[i][6] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][3];
-    output[i][6] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][3];
-
-    // output[i][6] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][3];
-    // output[i][6] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][3];
-    // output[i][6] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][3];
-    // output[i][6] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][3];
-
-    output[i][6] /= 4;
-  }
-
-  for(int i = 0; i < 8; i++) { // column 7
-    // output[i][7] += (Ctimesx[i][0] + Ctimesx[i][7]) * CT[0][7];
-    // output[i][7] += (Ctimesx[i][1] + Ctimesx[i][6]) * CT[1][7];
-    // output[i][7] += (Ctimesx[i][2] + Ctimesx[i][5]) * CT[2][7];
-    // output[i][7] += (Ctimesx[i][3] + Ctimesx[i][4]) * CT[3][7];
-
-    output[i][7] += (Ctimesx[i][0] - Ctimesx[i][7]) * CT[4][7];
-    output[i][7] += (Ctimesx[i][1] - Ctimesx[i][6]) * CT[5][7];
-    output[i][7] += (Ctimesx[i][2] - Ctimesx[i][5]) * CT[6][7];
-    output[i][7] += (Ctimesx[i][3] - Ctimesx[i][4]) * CT[7][7];
-
-    output[i][7] /= 4;
   }
 
   for(int i = 0; i < 8; i++) {
     for(int j = 0; j < 8; j++) {
-      output2[i][j] = output[i][j];
+      output[i][j] >>= 2;
     }
   }
 

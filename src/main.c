@@ -38,7 +38,7 @@ void dct(uint8_t *image, int width, int height) {
   int height_offset = height / 8;
   for (int i = 0; i < height_offset; i++) {
     for (int j = 0; j < width_offset; j++) {
-      uint8_t block[8][8];
+      int block[8][8];
       int output[8][8];
 
       for (int k = 0; k < 8; k++) {
@@ -52,7 +52,7 @@ void dct(uint8_t *image, int width, int height) {
 
       // print_matrix(block, 8, 8);
 
-      naive(block, output);
+      unoptimized_algo(block, output);
       print_matrix(output, 8, 8);
     } 
   }
