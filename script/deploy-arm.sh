@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# ./script/deploy-arm.sh mynetlinkid user1 "./test/8x16_128_byte 8 16"
+
 netlink_id=$1
 arm_user=$2 # There are 4 users on the machine: user1, user2, user3, user4
 execution_args=$3 # e.g. "./test/8x8_64_byte 8 8"
