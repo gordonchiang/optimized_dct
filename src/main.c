@@ -59,7 +59,7 @@ void dct(uint8_t *image, int width, int height) {
 
 int main(int argc, char *argv[]) {
   if (argc != 4) {
-    printf("Error: invalid number of arguments (example: ./main ./test/64_byte_input 8 8)\n");
+    printf("Error: invalid number of arguments (example: ./main ./test/8x8_64_byte 8 8)\n");
     return EXIT_FAILURE;
   }
   char *input_file = argv[1];
