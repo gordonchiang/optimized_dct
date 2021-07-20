@@ -1,8 +1,8 @@
 CC=gcc
 CFLAGS=-c -Wall -g
 
-main: ./src/main.o ./src/unoptimized_algo.o ./src/naive.o
-	$(CC) -Wall -lm ./src/main.o ./src/unoptimized_algo.o ./src/naive.o -o main.exe
+main: ./src/main.c ./src/unoptimized_algo.c ./src/naive.c
+	$(CC) -Wall -lm ./src/main.c ./src/unoptimized_algo.c ./src/naive.c -o main.exe
 
 .PHONY clean:
 clean:
