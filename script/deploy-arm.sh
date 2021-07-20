@@ -15,7 +15,7 @@ echo;
 
 # ssh into remote and make a folder in /tmp
 echo "Creating folder /tmp/${netlink_id}/ on remote";
-ssh "$netlink_id"@seng440.ece.uvic.ca "cd /tmp; mkdir ${netlink_id}";
+ssh "$netlink_id"@seng440.ece.uvic.ca "cd /tmp; mkdir -p ${netlink_id}";
 echo;
 
 # Send local source code to remote
@@ -29,7 +29,7 @@ commands=()
 commands+="echo;"
 commands+="echo 'Compile on remote';"
 commands+="cd /tmp/${netlink_id};"
-commands+="make arm;"
+commands+="make arm-neon;"
 commands+="chmod 777 ./main.exe;"
 commands+="echo;"
 
