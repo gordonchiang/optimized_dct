@@ -23,8 +23,8 @@ uint8_t *read_image(char *filepath, size_t dimensions) {
 
 void print_matrix(int matrix[8][8], int width, int height) {
   int i, j;
-  for(i = 0; i < width; i++) {
-    for(j = 0; j < height; j++) {
+  for (i = 0; i < width; i++) {
+    for (j = 0; j < height; j++) {
       printf("%4d ", matrix[i][j]);
     }
     printf("\n");

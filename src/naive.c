@@ -7,17 +7,17 @@
 
 void naive(uint8_t input[8][8], int output[8][8]) {
   int u, v, i, j;
-  for(u = 0; u < 8; u++) {
+  for (u = 0; u < 8; u++) {
     double Cu = (u == 0 ? 1/sqrt(2) : 1)/2;
 
-    for(v = 0; v < 8; v++) {
+    for (v = 0; v < 8; v++) {
       double Cv = (v == 0 ? 1/sqrt(2) : 1)/2;
       
       double outer_sum = 0;
-      for(i = 0; i < 8; i++) {
+      for (i = 0; i < 8; i++) {
         double inner_sum = 0;
 
-        for(j = 0; j < 8; j++) {
+        for (j = 0; j < 8; j++) {
           inner_sum += input[i][j] * cos((2*i+1)*u*M_PI/16) * cos((2*j+1)*v*M_PI/16);
         }
 

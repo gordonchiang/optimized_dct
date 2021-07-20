@@ -12,8 +12,8 @@
 
 int unoptimized_algo(int input[8][8], int output[8][8]) {
   int x, y, i, j;
-  for(y = 2; y != 0; y--) {
-    for(x = 0; x < 8; x++) {
+  for (y = 2; y != 0; y--) {
+    for (x = 0; x < 8; x++) {
       int temp1, temp2, temp3, temp4;
 
       temp1 = input[0][x] + input[7][x];
@@ -95,15 +95,15 @@ int unoptimized_algo(int input[8][8], int output[8][8]) {
       output[x][7] = ((C7 * temp1) + (-C5 * temp2) + (C3 * temp3) + (-C1 * temp4)) >> 15;
     }
 
-    for(i = 0; i < 8; i++) {
-      for(j = 0; j < 8; j++){
+    for (i = 0; i < 8; i++) {
+      for (j = 0; j < 8; j++){
         input[i][j] = output[i][j];
       }
     }
   }
 
-  for(i = 0; i < 8; i++) {
-    for(j = 0; j < 8; j++) {
+  for (i = 0; i < 8; i++) {
+    for (j = 0; j < 8; j++) {
       output[i][j] >>= 2;
     }
   }
