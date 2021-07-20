@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <math.h>
-
 #include "../include/unoptimized_algo.h"
 #include "../include/naive.h"
 
@@ -24,8 +22,9 @@ uint8_t *read_image(char *filepath, size_t dimensions) {
 }
 
 void print_matrix(int matrix[8][8], int width, int height) {
-  for(int i = 0; i < width; i++) {
-    for(int j = 0; j < height; j++) {
+  int i, j;
+  for (i = 0; i < width; i++) {
+    for (j = 0; j < height; j++) {
       printf("%4d ", matrix[i][j]);
     }
     printf("\n");
@@ -34,15 +33,16 @@ void print_matrix(int matrix[8][8], int width, int height) {
 }
 
 void dct(uint8_t *image, int width, int height) {
+  int i, j, k, l;
   int width_offset = width / 8;
   int height_offset = height / 8;
-  for (int i = 0; i < height_offset; i++) {
-    for (int j = 0; j < width_offset; j++) {
+  for (i = 0; i < height_offset; i++) {
+    for (j = 0; j < width_offset; j++) {
       int block[8][8];
       int output[8][8];
 
-      for (int k = 0; k < 8; k++) {
-        for (int l = 0; l < 8; l++) {
+      for (k = 0; k < 8; k++) {
+        for (l = 0; l < 8; l++) {
           int index = width*((i*8) + k) + ((j*8) + l);
           block[k][l] = image[index];
         }
@@ -50,39 +50,16 @@ void dct(uint8_t *image, int width, int height) {
 
       printf("Block with top-left coordinates: (%d,%d)\n", j*8, i*8);
 
-      // print_matrix(block, 8, 8);
-
       unoptimized_algo(block, output);
       print_matrix(output, 8, 8);
     } 
   }
-
-  // uint8_t input[8][8];
-  // int output[8][8];
-  // for(int i = 0; i < 8; i++) {
-  //   for(int j = 0; j < 8; j++) {
-  //     input[i][j] = image[i*8+j];
-  //     output[i][j] = 0;
-  //   }
-  // }
-
-  // naive(input, output);
-  // print_matrix(output, 8, 8);
-
-  // for(int i = 0; i < 8; i++) {
-  //   for(int j = 0; j < 8; j++) {
-  //     output[i][j] = 0;
-  //   }
-  // }
-
-  // unoptimized_algo(input, output);
-  // print_matrix(output, 8, 8);
 }
 
 
 int main(int argc, char *argv[]) {
   if (argc != 4) {
-    printf("Error: invalid number of arguments (example: ./main ./test/64_byte_input 8 8)\n");
+    printf("Error: invalid number of arguments (example: ./main ./test/8x8_64_byte 8 8)\n");
     return EXIT_FAILURE;
   }
   char *input_file = argv[1];
