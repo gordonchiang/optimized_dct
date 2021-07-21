@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "../include/unoptimized_algo.h"
+#include "../include/unoptimized.h"
 #include "../include/naive.h"
+#include "../include/neon.h"
 
 uint8_t *read_image(char *filepath, size_t dimensions) {
   FILE *fp = fopen(filepath, "r");
@@ -50,7 +51,7 @@ void dct(uint8_t *image, int width, int height) {
 
       printf("Block with top-left coordinates: (%d,%d)\n", j*8, i*8);
 
-      unoptimized_algo(block, output);
+      neon(block, output);
       print_matrix(output, 8, 8);
     } 
   }
