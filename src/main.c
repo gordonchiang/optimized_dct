@@ -3,7 +3,10 @@
 #include <stdint.h>
 #include "../include/unoptimized.h"
 #include "../include/naive.h"
+
+#ifdef NEON
 #include "../include/neon.h"
+#endif
 
 uint8_t *read_image(char *filepath, size_t dimensions) {
   FILE *fp = fopen(filepath, "r");
@@ -51,12 +54,22 @@ void dct(uint8_t *image, int width, int height) {
 
       printf("Block with top-left coordinates: (%d,%d)\n", j*8, i*8);
 
+#ifdef NAIVE
+      naive(block, output);
+#endif
+
+#ifdef UNOPTIMIZED
+      unoptimized(block, output);
+#endif
+
+#ifdef NEON
       neon(block, output);
+#endif
+
       print_matrix(output, 8, 8);
     } 
   }
 }
-
 
 int main(int argc, char *argv[]) {
   if (argc != 4) {

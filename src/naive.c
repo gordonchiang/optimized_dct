@@ -5,7 +5,7 @@
   #define M_PI 3.14159265358979323846
 #endif
 
-void naive(uint8_t input[8][8], int output[8][8]) {
+void naive(int input[8][8], int output[8][8]) {
   int u, v, i, j;
   for (u = 0; u < 8; u++) {
     double Cu = (u == 0 ? 1/sqrt(2) : 1)/2;
