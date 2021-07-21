@@ -1,5 +1,5 @@
 docs/
-vm/
+vm/*
 *.o
 *.exe
 *.out
