@@ -11,7 +11,7 @@
 #define C6 12540
 #define C7 6393
 
-int unoptimized_algo(int input[8][8], int output[8][8]) {
+int neon(int input[8][8], int output[8][8]) {
   int x, y, i, j;
   for (y = 2; y != 0; y--) {
     for (x = 0; x < 8; x++) {
@@ -24,9 +24,7 @@ int unoptimized_algo(int input[8][8], int output[8][8]) {
       };
      
       int32x4_t inputInitial;
-      printf("before neon -------\n");
       inputInitial = vld1q_s32(temp);
-      printf("after neon -------\n");
       // Load C as a vector
       int32_t arr1[4] = {C4, C4, C4, C4};
       int32_t arr2[4] = {C2, C6, -C6, -C2};

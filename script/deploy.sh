@@ -1,11 +1,16 @@
 #!/bin/bash
 
-# ./script/deploy-arm.sh mynetlinkid user1 "./test/8x16_128_byte 8 16" -vm
+## Examples
+# Send the file to your local vm
+# ./script/deploy.sh mynetlinkid -vm
+
+# Execute on remote ARM
+# ./script/deploy.sh mynetlinkid -arm user1 "./test/8x16_128_byte 8 16"
 
 netlink_id=$1
-arm_user=$2 # There are 4 users on the machine: user1, user2, user3, user4
-execution_args=$3 # e.g. "./test/8x8_64_byte 8 8"
-mode=$4 # e.g. -arm or -vm
+mode=$2 # e.g. -arm or -vm
+arm_user=$3 # There are 4 users on the machine: user1, user2, user3, user4
+execution_args=$4 # e.g. "./test/8x8_64_byte 8 8"
 
 root_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; cd ../; pwd -P ) # https://stackoverflow.com/questions/24112727/relative-paths-based-on-file-location-instead-of-current-working-directory
 arm_password="q6coHjd7P"
