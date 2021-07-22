@@ -38,7 +38,7 @@ const double cosine[32] = {
   0.707106781186547,
   0.831469612302545,
   0.923879532511287,
-  0.980785280403230
+  0.980785280403230 // 31, 32 (after this index) loops back to the start
 };
 
 void naive(int input[8][8], int output[8][8]) {
