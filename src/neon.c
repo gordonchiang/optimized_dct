@@ -156,4 +156,5 @@ int neon(int input[8][8], int output[8][8]) {
 
   return EXIT_SUCCESS;
 }
+
 #endif
