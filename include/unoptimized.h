@@ -1,1 +1,1 @@
-int unoptimized(int[8][8], int[8][8]);
+void unoptimized(int[8][8], int[8][8]);

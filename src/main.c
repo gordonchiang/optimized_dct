@@ -3,10 +3,7 @@
 #include <stdint.h>
 #include "../include/unoptimized.h"
 #include "../include/naive.h"
-
-#ifdef NEON
 #include "../include/neon.h"
-#endif
 
 uint8_t *read_image(char *filepath, size_t dimensions) {
   FILE *fp = fopen(filepath, "r");
