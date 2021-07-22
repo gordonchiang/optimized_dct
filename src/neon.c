@@ -1,5 +1,3 @@
-#ifdef NEON
-
 #include <stdint.h>
 #include "arm_neon.h"
 
@@ -152,5 +150,3 @@ void neon(int input[8][8], int output[8][8]) {
     }
   }
 }
-
-#endif
