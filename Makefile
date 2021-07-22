@@ -10,15 +10,15 @@ ifeq (${ALGO}, UNOPTIMIZED) # make <arm> ALGO=UNOPTIMIZED
 endif
 
 ifeq (${ALGO}, NEON) # make arm ALGO=NEON
-	OPTS=-mfloat-abi=softfp -mfpu=neon
+	CFLAGS+=-mfloat-abi=softfp -mfpu=neon
 	DEPS+=./src/neon.c
 endif
 
 dct: ${DEPS}
-	gcc $(CFLAGS) ${OPTS} $^ -o dct.exe
+	gcc $(CFLAGS) $^ -o dct.exe
 
 arm: ${DEPS}
-	arm-linux-gcc $(CFLAGS) ${OPTS} $^ -o dct.exe
+	arm-linux-gcc $(CFLAGS) $^ -o dct.exe
 
 .PHONY clean:
 clean:
