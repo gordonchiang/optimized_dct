@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include "arm_neon.h"
 
@@ -11,7 +9,7 @@
 #define C6 12540
 #define C7 6393
 
-int neon(int input[8][8], int output[8][8]) {
+void neon(int input[8][8], int output[8][8]) {
   int x, y, i, j;
   for (y = 2; y != 0; y--) {
     for (x = 0; x < 8; x++) {
@@ -151,6 +149,4 @@ int neon(int input[8][8], int output[8][8]) {
       output[i][j] >>= 2;
     }
   }
-
-  return EXIT_SUCCESS;
 }

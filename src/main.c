@@ -51,12 +51,22 @@ void dct(uint8_t *image, int width, int height) {
 
       printf("Block with top-left coordinates: (%d,%d)\n", j*8, i*8);
 
+#ifdef NAIVE
+      naive(block, output);
+#endif
+
+#ifdef UNOPTIMIZED
+      unoptimized(block, output);
+#endif
+
+#ifdef NEON
       neon(block, output);
+#endif
+
       print_matrix(output, 8, 8);
     } 
   }
 }
-
 
 int main(int argc, char *argv[]) {
   if (argc != 4) {

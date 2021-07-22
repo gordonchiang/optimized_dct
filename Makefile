@@ -1,11 +1,24 @@
-main: ./src/main.c ./src/unoptimized.c ./src/naive.c
-	gcc -Wall -lm ./src/main.c ./src/unoptimized.c ./src/naive.c -o main.exe
+CFLAGS=-D${ALGO} -Wall -static
+DEPS=./src/main.c
 
-arm: ./src/main.c ./src/unoptimized.c
-	arm-linux-gcc -static ./src/main.c ./src/unoptimized.c -o main.exe
+ifeq (${ALGO}, NAIVE) # make <arm> ALGO=NAIVE
+	DEPS+=./src/naive.c
+endif
 
-arm-neon: ./src/main.c ./src/neon.c
-	arm-linux-gcc -Wall -mfloat-abi=softfp -mfpu=neon -static ./src/main.c ./src/neon.c -o main.exe
+ifeq (${ALGO}, UNOPTIMIZED) # make <arm> ALGO=UNOPTIMIZED
+	DEPS+=./src/unoptimized.c
+endif
+
+ifeq (${ALGO}, NEON) # make arm ALGO=NEON
+	CFLAGS+=-mfloat-abi=softfp -mfpu=neon
+	DEPS+=./src/neon.c
+endif
+
+dct: ${DEPS}
+	gcc $(CFLAGS) $^ -o dct.exe
+
+arm: ${DEPS}
+	arm-linux-gcc $(CFLAGS) $^ -o dct.exe
 
 .PHONY clean:
 clean:

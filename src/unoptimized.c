@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-
 #define C1 32138
 #define C2 30274
 #define C3 27246
@@ -10,7 +6,7 @@
 #define C6 12540
 #define C7 6393
 
-int unoptimized(int input[8][8], int output[8][8]) {
+void unoptimized(int input[8][8], int output[8][8]) {
   int x, y, i, j;
   for (y = 2; y != 0; y--) {
     for (x = 0; x < 8; x++) {
@@ -49,6 +45,4 @@ int unoptimized(int input[8][8], int output[8][8]) {
       output[i][j] >>= 2;
     }
   }
-
-  return EXIT_SUCCESS;
 }
