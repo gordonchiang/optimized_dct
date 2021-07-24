@@ -21,9 +21,9 @@ void unrolled(int32_t input[8][8], int32_t output[8][8]) {
     temp4 = input[i][3] + input[i][4];
 
     // Maintain transpose-ness
-    temp[0][i] = ((C4 * temp1) + (C4 * temp2) + (C4 * temp3) + (C4 * temp4));
+    temp[0][i] = (temp1 + temp2 + temp3 + temp4) * C4;
     temp[2][i] = ((C2 * temp1) + (C6 * temp2) + (-C6 * temp3) + (-C2 * temp4));
-    temp[4][i] = ((C4 * temp1) + (-C4 * temp2) + (-C4 * temp3) + (C4 * temp4));
+    temp[4][i] = (temp1 + temp4) * C4 + (temp2 + temp3) * -C4;
     temp[6][i] = ((C6 * temp1) + (-C2 * temp2) + (C2 * temp3) + (-C6 * temp4));
 
     temp1 = input[i][0] - input[i][7];
@@ -44,9 +44,9 @@ void unrolled(int32_t input[8][8], int32_t output[8][8]) {
     temp4 = temp[i][3] + temp[i][4];
 
     // Transpose again to get original image
-    output[i][0] = ((C4 * temp1) + (C4 * temp2) + (C4 * temp3) + (C4 * temp4)) >> 32;
+    output[i][0] = ((temp1 + temp2 + temp3 + temp4) * C4) >> 32;
     output[i][2] = ((C2 * temp1) + (C6 * temp2) + (-C6 * temp3) + (-C2 * temp4)) >> 32;
-    output[i][4] = ((C4 * temp1) + (-C4 * temp2) + (-C4 * temp3) + (C4 * temp4)) >> 32;
+    output[i][4] = ((temp1 + temp4) * C4 + (temp2 + temp3) * -C4) >> 32;
     output[i][6] = ((C6 * temp1) + (-C2 * temp2) + (C2 * temp3) + (-C6 * temp4)) >> 32;
 
     temp1 = temp[i][0] - temp[i][7];
