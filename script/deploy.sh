@@ -2,16 +2,17 @@
 
 ## Examples
 # Send the file to your local vm
-# ./script/deploy.sh mynetlinkid -vm "make arm ALGO=NEON"
+# ./script/deploy.sh mynetlinkid -vm "make arm ALGO=NEON" "./test/8x8_64_byte 8 8"
 
 # Execute on remote ARM
-# ./script/deploy.sh mynetlinkid -arm "make arm ALGO=NAIVE" user1 "./test/8x16_128_byte 8 16"
+# ./script/deploy.sh mynetlinkid -arm "make arm ALGO=NAIVE" "./test/8x16_128_byte 8 16" user1
 
 netlink_id=$1
 mode=$2 # e.g. -arm or -vm
 make=$3 # make ALGO=NAIVE || UNOPTIMIZED || NEON, make arm-neon
-arm_user=$4 # There are 4 users on the machine: user1, user2, user3, user4
-execution_args=$5 # e.g. "./test/8x8_64_byte 8 8"
+execution_args=$4 # e.g. "./test/8x8_64_byte 8 8"
+arm_user=$5 # There are 4 users on the machine: user1, user2, user3, user4
+
 
 root_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; cd ../; pwd -P ) # https://stackoverflow.com/questions/24112727/relative-paths-based-on-file-location-instead-of-current-working-directory
 arm_password="q6coHjd7P"
@@ -88,8 +89,10 @@ if [[ "$mode" == "-vm" ]]; then
   scp "$netlink_id"@seng440.ece.uvic.ca:/tmp/"$netlink_id"/dct.exe "$root_dir";
   echo;
 
-  echo "Send dct.exe and test files to vm";
-  scp -P 5555 -r ./dct.exe ./test root@localhost:~;
-  echo "Files have been placed in vm";
-  echo;
+  # echo "Send dct.exe and test files to vm"; # You don't have to place files on vm to execute
+  # scp -P 5555 -r ./dct.exe ./test root@localhost:~;
+  # echo "Files have been placed in vm";
+  # echo;
+
+  qemu-arm ./dct.exe ${execution_args};
 fi
