@@ -10,6 +10,7 @@ ifeq (${ALGO}, UNOPTIMIZED) # make <arm> ALGO=UNOPTIMIZED
 endif
 
 ifeq (${ALGO}, UNROLLED) # make <arm> ALGO=UNROLLED
+	CFLAGS+=-DTRANSPOSE
 	DEPS+=./src/unrolled.c
 endif
 

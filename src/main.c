@@ -46,7 +46,12 @@ void dct(uint8_t *image, int width, int height) {
       for (k = 0; k < 8; k++) {
         for (l = 0; l < 8; l++) {
           int index = width*((i*8) + k) + ((j*8) + l);
+#ifndef TRANSPOSE
           block[k][l] = image[index];
+#endif
+#ifdef TRANSPOSE
+          block[l][k] = image[index]; // transpose the image!
+#endif
         }
       }
 
