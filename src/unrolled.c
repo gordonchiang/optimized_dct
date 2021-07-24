@@ -8,6 +8,11 @@
 #define C6 12540
 #define C7 6393
 
+// This algorithm builds on top of UNOPTIMIZED
+// It unrolls the loop
+// Reduces the strength of operators
+// Attempts to minimize cache misses
+// Optimizes loop initialization and exit
 void unrolled(int32_t input[8][8], int32_t output[8][8]) {
   // input actually only uint8_t
   register int i;
