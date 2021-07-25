@@ -4,6 +4,7 @@
 #include "../include/unoptimized.h"
 #include "../include/naive.h"
 #include "../include/neon.h"
+#include "../include/testbench.h"
 
 uint8_t *read_image(char *filepath, size_t dimensions) {
   FILE *fp = fopen(filepath, "r");
@@ -59,6 +60,7 @@ void dct(uint8_t *image, int width, int height) {
 
 
 int main(int argc, char *argv[]) {
+  //testbench();
   if (argc != 4) {
     printf("Error: invalid number of arguments (example: ./main ./test/8x8_64_byte 8 8)\n");
     return EXIT_FAILURE;
