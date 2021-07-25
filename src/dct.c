@@ -14,8 +14,8 @@ void print_matrix(int matrix[8][8], int width, int height) {
 
 void dct(uint8_t *image, int width, int height, void (*algorithm)(int[8][8], int[8][8])) {
   int i, j, k, l;
-  int width_offset = width / 8;
-  int height_offset = height / 8;
+  int width_offset = width >> 3;
+  int height_offset = height >> 3;
   for (i = 0; i < height_offset; i++) {
     for (j = 0; j < width_offset; j++) {
       int block[8][8];
