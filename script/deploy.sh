@@ -104,7 +104,7 @@ if [[ "$mode" == "-vm" ]]; then
   qemu-arm ./dct.exe ${execution_args};
 fi
 
-# Run on local vm
+# Download assembly output to local
 if [[ "$mode" == "-prof" ]]; then
   echo "Download assembly files from remote @ seng440.ece.uvic.ca to local";
   scp "$netlink_id"@seng440.ece.uvic.ca:/tmp/"$netlink_id"/*.s "$root_dir";
