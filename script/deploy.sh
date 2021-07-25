@@ -9,7 +9,7 @@
 
 netlink_id=$1
 mode=$2 # -arm, -vm, -prof, -clean
-make=$3 # make [arn] ALGO=NAIVE || UNOPTIMIZED || NEON
+make=$3 # make [arm] ALGO=NAIVE || UNOPTIMIZED || NEON
 execution_args=$4 # e.g. "./test/8x8_64_byte 8 8"
 arm_user=$5 # There are 4 users on the machine: user1, user2, user3, user4
 
