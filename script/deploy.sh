@@ -8,11 +8,10 @@
 # ./script/deploy.sh mynetlinkid -arm "make arm ALGO=NAIVE" "./test/8x16_128_byte 8 16" user1
 
 netlink_id=$1
-mode=$2 # e.g. -arm or -vm
-make=$3 # make ALGO=NAIVE || UNOPTIMIZED || NEON, make arm-neon
+mode=$2 # -arm, -vm, -prof, -clean
+make=$3 # make [arn] ALGO=NAIVE || UNOPTIMIZED || NEON
 execution_args=$4 # e.g. "./test/8x8_64_byte 8 8"
 arm_user=$5 # There are 4 users on the machine: user1, user2, user3, user4
-
 
 root_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; cd ../; pwd -P ) # https://stackoverflow.com/questions/24112727/relative-paths-based-on-file-location-instead-of-current-working-directory
 arm_password="q6coHjd7P"
@@ -20,6 +19,14 @@ arm_password="q6coHjd7P"
 # Execute commands on local from root directory of repo
 cd "$root_dir" || exit;
 echo;
+
+# Clean folder on remmote
+if [[ "$mode" == "-clean" ]]; then
+  echo "Deleting folder /tmp/${netlink_id}/ on remote";
+  ssh "$netlink_id"@seng440.ece.uvic.ca "cd /tmp; rm -r ./${netlink_id}";
+  echo;
+  exit 0;
+fi
 
 # ssh into remote and make a folder in /tmp
 echo "Creating folder /tmp/${netlink_id}/ on remote";
@@ -89,10 +96,17 @@ if [[ "$mode" == "-vm" ]]; then
   scp "$netlink_id"@seng440.ece.uvic.ca:/tmp/"$netlink_id"/dct.exe "$root_dir";
   echo;
 
-  # echo "Send dct.exe and test files to vm"; # You don't have to place files on vm to execute
-  # scp -P 5555 -r ./dct.exe ./test root@localhost:~;
-  # echo "Files have been placed in vm";
-  # echo;
+  echo "Send dct.exe and test files to vm"; # You don't have to place files on vm to execute
+  scp -P 5555 -r ./dct.exe ./test root@localhost:~;
+  echo "Files have been placed in vm";
+  echo;
 
   qemu-arm ./dct.exe ${execution_args};
+fi
+
+# Run on local vm
+if [[ "$mode" == "-prof" ]]; then
+  echo "Download assembly files from remote @ seng440.ece.uvic.ca to local";
+  scp "$netlink_id"@seng440.ece.uvic.ca:/tmp/"$netlink_id"/*.s "$root_dir";
+  echo;
 fi

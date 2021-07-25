@@ -1,5 +1,12 @@
-CFLAGS=-D${ALGO} -Wall -static
+CFLAGS=-D${ALGO} -Wall -static -O3
 DEPS=./src/main.c
+
+ifdef S # generate assembly instead of executable
+	OUTPUT=-S
+endif
+ifndef S
+	OUTPUT=-o dct.exe
+endif
 
 ifeq (${ALGO}, NAIVE) # make <arm> ALGO=NAIVE
 	DEPS+=./src/naive.c
@@ -20,10 +27,10 @@ ifeq (${ALGO}, NEON) # make arm ALGO=NEON
 endif
 
 dct: ${DEPS}
-	gcc $(CFLAGS) $^ -o dct.exe
+	gcc $(CFLAGS) $^ $(OUTPUT)
 
 arm: ${DEPS}
-	arm-linux-gcc $(CFLAGS) $^ -o dct.exe
+	arm-linux-gcc $(CFLAGS) $^ $(OUTPUT)
 
 .PHONY clean:
 clean:
