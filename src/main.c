@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "../include/unoptimized.h"
 #include "../include/naive.h"
+#include "../include/unoptimized.h"
+#include "../include/unrolled.h"
 #include "../include/neon.h"
 
 uint8_t *read_image(char *filepath, size_t dimensions) {
@@ -45,7 +46,12 @@ void dct(uint8_t *image, int width, int height) {
       for (k = 0; k < 8; k++) {
         for (l = 0; l < 8; l++) {
           int index = width*((i*8) + k) + ((j*8) + l);
+#ifndef TRANSPOSE
           block[k][l] = image[index];
+#endif
+#ifdef TRANSPOSE
+          block[l][k] = image[index]; // transpose the image!
+#endif
         }
       }
 
@@ -59,6 +65,10 @@ void dct(uint8_t *image, int width, int height) {
       unoptimized(block, output);
 #endif
 
+#ifdef UNROLLED
+      unrolled(block, output);
+#endif
+
 #ifdef NEON
       neon(block, output);
 #endif
@@ -70,7 +80,7 @@ void dct(uint8_t *image, int width, int height) {
 
 int main(int argc, char *argv[]) {
   if (argc != 4) {
-    printf("Error: invalid number of arguments (example: ./main ./test/8x8_64_byte 8 8)\n");
+    printf("Error: invalid number of arguments (example: ./dct.exe ./test/8x8_64_byte 8 8)\n");
     return EXIT_FAILURE;
   }
   char *input_file = argv[1];
