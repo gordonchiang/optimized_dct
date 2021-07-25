@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "../include/dct.h"
 #include "../include/naive.h"
 #include "../include/unoptimized.h"
 #include "../include/unrolled.h"
@@ -23,61 +24,6 @@ uint8_t *read_image(char *filepath, size_t dimensions) {
   return buffer;
 }
 
-void print_matrix(int matrix[8][8], int width, int height) {
-  int i, j;
-  for (i = 0; i < width; i++) {
-    for (j = 0; j < height; j++) {
-      printf("%4d ", matrix[i][j]);
-    }
-    printf("\n");
-  }
-  printf("\n");
-}
-
-void dct(uint8_t *image, int width, int height) {
-  int i, j, k, l;
-  int width_offset = width / 8;
-  int height_offset = height / 8;
-  for (i = 0; i < height_offset; i++) {
-    for (j = 0; j < width_offset; j++) {
-      int block[8][8];
-      int output[8][8];
-
-      for (k = 0; k < 8; k++) {
-        for (l = 0; l < 8; l++) {
-          int index = width*((i*8) + k) + ((j*8) + l);
-#ifndef TRANSPOSE
-          block[k][l] = image[index];
-#endif
-#ifdef TRANSPOSE
-          block[l][k] = image[index]; // transpose the image!
-#endif
-        }
-      }
-
-      printf("Block with top-left coordinates: (%d,%d)\n", j*8, i*8);
-
-#ifdef NAIVE
-      naive(block, output);
-#endif
-
-#ifdef UNOPTIMIZED
-      unoptimized(block, output);
-#endif
-
-#ifdef UNROLLED
-      unrolled(block, output);
-#endif
-
-#ifdef NEON
-      neon(block, output);
-#endif
-
-      print_matrix(output, 8, 8);
-    } 
-  }
-}
-
 int main(int argc, char *argv[]) {
   if (argc != 4) {
     printf("Error: invalid number of arguments (example: ./dct.exe ./test/8x8_64_byte 8 8)\n");
@@ -93,7 +39,34 @@ int main(int argc, char *argv[]) {
   }
   uint8_t *image = read_image(input_file, width*height);
 
-  dct(image, width, height);
+  // Use the selected DCT algorithm
+  void (*algorithm)(int[8][8], int[8][8]);
+
+  printf("Selected DCT algorithm: ");
+
+#ifdef NAIVE
+  algorithm = naive;
+  printf("naive");
+#endif
+
+#ifdef UNOPTIMIZED
+  algorithm = unoptimized;
+  printf("unoptimized");
+#endif
+
+#ifdef UNROLLED
+  algorithm = unrolled;
+  printf("unrolled");
+#endif
+
+#ifdef NEON
+  algorithm = neon;
+  printf("neon");
+#endif
+
+  printf("\n\n");
+
+  dct(image, width, height, algorithm);
 
   return EXIT_SUCCESS;
 }
