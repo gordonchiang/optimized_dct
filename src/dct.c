@@ -1,9 +1,5 @@
 #include <stdio.h>
 #include <stdint.h>
-#include "../include/naive.h"
-#include "../include/unoptimized.h"
-#include "../include/unrolled.h"
-#include "../include/neon.h"
 
 void print_matrix(int matrix[8][8], int width, int height) {
   int i, j;
