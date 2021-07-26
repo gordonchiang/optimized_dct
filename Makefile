@@ -1,5 +1,5 @@
 CFLAGS=-D${ALGO} -Wall -static -O3
-DEPS=./src/main.c
+DEPS=./src/main.c ./src/dct.c
 
 ifdef S # generate assembly instead of executable
 	OUTPUT=-S
