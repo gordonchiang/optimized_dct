@@ -16,7 +16,6 @@
 // Optimizes loop initialization and exit
 // Lowers the SF so values fit into 1 register
 void unrolled(int32_t input[8][8], int32_t output[8][8]) {
-  // input actually only uint8_t
   register int i;
   register int32_t temp1, temp2, temp3, temp4;
   int32_t temp[8][8];

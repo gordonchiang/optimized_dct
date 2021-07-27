@@ -5,6 +5,7 @@
 #include "../include/naive.h"
 #include "../include/unoptimized.h"
 #include "../include/unrolled.h"
+#include "../include/pipelined.h"
 #include "../include/neon.h"
 
 uint8_t *read_image(char *filepath, size_t dimensions) {
@@ -57,6 +58,11 @@ int main(int argc, char *argv[]) {
 #ifdef UNROLLED
   algorithm = unrolled;
   printf("unrolled");
+#endif
+
+#ifdef PIPELINED
+  algorithm = pipelined;
+  printf("pipelined");
 #endif
 
 #ifdef NEON
