@@ -57,7 +57,6 @@ void unrolled(int32_t input[8][8], int32_t output[8][8]) {
     output[i][4] = ((temp1 - temp2 - temp3 + temp4) * C4) >> 18;
     output[i][6] = ((temp1 - temp4) * C6 + (temp3 - temp2) * C2) >> 18;
 
-
     temp1 = temp[i][0] - temp[i][7];
     temp2 = temp[i][1] - temp[i][6];
     temp3 = temp[i][2] - temp[i][5];
