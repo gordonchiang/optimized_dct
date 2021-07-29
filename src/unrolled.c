@@ -30,7 +30,7 @@ void unrolled(int32_t input[8][8], int32_t output[8][8]) {
     temp[0][i] = (temp1 + temp2 + temp3 + temp4) * C4;
     temp[2][i] = (temp1 - temp4) * C2 + (temp2 - temp3) * C6;
     temp[4][i] = (temp1 - temp2 - temp3 + temp4) * C4;
-    temp[6][i] = (temp1 - temp4) * C6 - (temp2 + temp3) * C2;
+    temp[6][i] = (temp1 - temp4) * C6 + (temp3 - temp2) * C2;
 
     temp1 = input[i][0] - input[i][7];
     temp2 = input[i][1] - input[i][6];
@@ -55,7 +55,8 @@ void unrolled(int32_t input[8][8], int32_t output[8][8]) {
     output[i][0] = ((temp1 + temp2 + temp3 + temp4) * C4) >> 18;
     output[i][2] = ((temp1 - temp4) * C2 + (temp2 - temp3) * C6) >> 18;
     output[i][4] = ((temp1 - temp2 - temp3 + temp4) * C4) >> 18;
-    output[i][6] = ((temp1 - temp4) * C6 - (temp2 + temp3) * C2) >> 18;
+    output[i][6] = ((temp1 - temp4) * C6 + (temp3 - temp2) * C2) >> 18;
+
 
     temp1 = temp[i][0] - temp[i][7];
     temp2 = temp[i][1] - temp[i][6];
