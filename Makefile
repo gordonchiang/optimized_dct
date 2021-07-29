@@ -8,6 +8,10 @@ ifndef S
 	OUTPUT=-o dct.exe
 endif
 
+ifdef G # compile with debugging option
+	CLFAGS+=-g
+endif
+
 ifeq (${ALGO}, NAIVE) # make <arm> ALGO=NAIVE
 	DEPS+=./src/naive.c
 endif
