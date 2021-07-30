@@ -27,9 +27,9 @@ void unrolled(int32_t input[8][8], int32_t output[8][8]) {
     temp4 = input[i][3] + input[i][4];
 
     // Maintain transpose-ness
-    temp[0][i] = (temp1 + temp2 + temp3 + temp4) * C4;
+    temp[0][i] = (temp1 + temp4 + temp2 + temp3) * C4;
+    temp[4][i] = (temp1 + temp4 - temp2 - temp3) * C4;
     temp[2][i] = (temp1 - temp4) * C2 + (temp2 - temp3) * C6;
-    temp[4][i] = (temp1 - temp2 - temp3 + temp4) * C4;
     temp[6][i] = (temp1 - temp4) * C6 + (temp3 - temp2) * C2;
 
     temp1 -= input[i][7] << 1;
@@ -52,9 +52,9 @@ void unrolled(int32_t input[8][8], int32_t output[8][8]) {
     // Transpose again to get original image
     // Divide each output element by SF
     // Divide by an additional factor of 4 (>> 2)
-    output[i][0] = ((temp1 + temp2 + temp3 + temp4) * C4) >> 18;
+    output[i][0] = ((temp1 + temp4 + temp2 + temp3) * C4) >> 18;
+    output[i][4] = ((temp1 + temp4 - temp2 - temp3) * C4) >> 18;
     output[i][2] = ((temp1 - temp4) * C2 + (temp2 - temp3) * C6) >> 18;
-    output[i][4] = ((temp1 - temp2 - temp3 + temp4) * C4) >> 18;
     output[i][6] = ((temp1 - temp4) * C6 + (temp3 - temp2) * C2) >> 18;
 
     temp1 -= temp[i][7] << 1;
