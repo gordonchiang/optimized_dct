@@ -127,7 +127,7 @@ void neon(int input[8][8], int output[8][8]) {
     pairwiseAddedOnce = vpaddlq_s32(prod);
     narrowed = vmovn_s64(pairwiseAddedOnce);
     pairwiseAddedTwice = vpaddl_s32(narrowed);
-    output[i][1] = (int32_t)vget_lane_s64(pairwiseAddedTwice, 0) >> 18;;
+    output[i][1] = (int32_t)vget_lane_s64(pairwiseAddedTwice, 0) >> 18;
 
     prod = vmulq_s32(tempVector, C_row_5);
     pairwiseAddedOnce = vpaddlq_s32(prod);
