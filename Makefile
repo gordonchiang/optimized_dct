@@ -25,6 +25,11 @@ ifeq (${ALGO}, UNROLLED) # make <arm> ALGO=UNROLLED
 	DEPS+=./src/unrolled.c
 endif
 
+ifeq (${ALGO}, PIPELINED) # make <arm> ALGO=PIPELINED
+	CFLAGS+=-DTRANSPOSE
+	DEPS+=./src/pipelined.c
+endif
+
 ifeq (${ALGO}, NEON) # make arm ALGO=NEON
 	CFLAGS+=-DTRANSPOSE -mfloat-abi=softfp -mfpu=neon
 	DEPS+=./src/neon.c
