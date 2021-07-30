@@ -10,6 +10,7 @@
 #define C7 50
 
 // This algorithm builds on top of UNROLLED
+// but optimization appears to be worse due to cache misses
 // It introduces software pipelining
 void pipelined(int32_t input[8][8], int32_t output[8][8]) {
   register int i;
