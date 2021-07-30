@@ -11,10 +11,9 @@
 
 void neon(int input[8][8], int output[8][8]) {
   register int i;
-  register int32_t temp1, temp2, temp3, temp4;
+  register int32_t temp0, temp1, temp2, temp3;
   int32_t temp[8][8];
 
-  int32x4_t C_row_0 = {C4, C4, C4, C4};
   int32x4_t C_row_1 = {C2, C6, -C6, -C2};
   int32x4_t C_row_2 = {C4, -C4, -C4, C4};
   int32x4_t C_row_3 = {C6, -C2, C2, -C6};
@@ -30,18 +29,17 @@ void neon(int input[8][8], int output[8][8]) {
   int64x1_t pairwiseAddedTwice;
 
   for (i ^= i; !(i&8); i++) {
-    temp1 = input[i][0] + input[i][7];
-    temp2 = input[i][1] + input[i][6];
-    temp3 = input[i][2] + input[i][5];
-    temp4 = input[i][3] + input[i][4];
+    temp0 = input[i][0] + input[i][7];
+    temp1 = input[i][1] + input[i][6];
+    temp2 = input[i][2] + input[i][5];
+    temp3 = input[i][3] + input[i][4];
 
-    int32x4_t tempVector = { temp1, temp2, temp3, temp4 };
+    int32x4_t tempVector = { temp0, temp1, temp2, temp3 };
 
-    prod = vmulq_s32(tempVector, C_row_0);
-    pairwiseAddedOnce = vpaddlq_s32(prod);
+    pairwiseAddedOnce = vpaddlq_s32(tempVector);
     narrowed = vmovn_s64(pairwiseAddedOnce);
     pairwiseAddedTwice = vpaddl_s32(narrowed);
-    temp[0][i] = (int32_t)vget_lane_s64(pairwiseAddedTwice, 0);
+    temp[0][i] = (int32_t)vget_lane_s64(pairwiseAddedTwice, 0) * C4;
 
     prod = vmulq_s32(tempVector, C_row_1);
     pairwiseAddedOnce = vpaddlq_s32(prod);
@@ -61,12 +59,12 @@ void neon(int input[8][8], int output[8][8]) {
     pairwiseAddedTwice = vpaddl_s32(narrowed);
     temp[6][i] = (int32_t)vget_lane_s64(pairwiseAddedTwice, 0);
 
-    temp1 -= input[i][7] << 1;
-    temp2 -= input[i][6] << 1;
-    temp3 -= input[i][5] << 1;
-    temp4 -= input[i][4] << 1;
+    temp0 -= input[i][7] << 1;
+    temp1 -= input[i][6] << 1;
+    temp2 -= input[i][5] << 1;
+    temp3 -= input[i][4] << 1;
 
-    int32x4_t tempVector2 = { temp1, temp2, temp3, temp4 };
+    int32x4_t tempVector2 = { temp0, temp1, temp2, temp3 };
 
     prod = vmulq_s32(tempVector2, C_row_4);
     pairwiseAddedOnce = vpaddlq_s32(prod);
@@ -94,18 +92,17 @@ void neon(int input[8][8], int output[8][8]) {
   }
 
   for(i ^= i; !(i&8); i++) {
-    temp1 = temp[i][0] + temp[i][7];
-    temp2 = temp[i][1] + temp[i][6];
-    temp3 = temp[i][2] + temp[i][5];
-    temp4 = temp[i][3] + temp[i][4];
+    temp0 = temp[i][0] + temp[i][7];
+    temp1 = temp[i][1] + temp[i][6];
+    temp2 = temp[i][2] + temp[i][5];
+    temp3 = temp[i][3] + temp[i][4];
 
-    int32x4_t tempVector = { temp1, temp2, temp3, temp4 };
+    int32x4_t tempVector = { temp0, temp1, temp2, temp3 };
 
-    prod = vmulq_s32(tempVector, C_row_0);
-    pairwiseAddedOnce = vpaddlq_s32(prod);
+    pairwiseAddedOnce = vpaddlq_s32(tempVector);
     narrowed = vmovn_s64(pairwiseAddedOnce);
     pairwiseAddedTwice = vpaddl_s32(narrowed);
-    output[i][0] = (int32_t)vget_lane_s64(pairwiseAddedTwice, 0) >> 18;
+    output[i][0] = ((int32_t)vget_lane_s64(pairwiseAddedTwice, 0) * C4) >> 18;
 
     prod = vmulq_s32(tempVector, C_row_1);
     pairwiseAddedOnce = vpaddlq_s32(prod);
@@ -125,12 +122,12 @@ void neon(int input[8][8], int output[8][8]) {
     pairwiseAddedTwice = vpaddl_s32(narrowed);
     output[i][6] = (int32_t)vget_lane_s64(pairwiseAddedTwice, 0) >> 18;
 
-    temp1 -= temp[i][7] << 1;
-    temp2 -= temp[i][6] << 1;
-    temp3 -= temp[i][5] << 1;
-    temp4 -= temp[i][4] << 1;
+    temp0 -= temp[i][7] << 1;
+    temp1 -= temp[i][6] << 1;
+    temp2 -= temp[i][5] << 1;
+    temp3 -= temp[i][4] << 1;
 
-    int32x4_t tempVector2 = { temp1, temp2, temp3, temp4 };
+    int32x4_t tempVector2 = { temp0, temp1, temp2, temp3 };
 
     prod = vmulq_s32(tempVector2, C_row_4);
     pairwiseAddedOnce = vpaddlq_s32(prod);
