@@ -22,7 +22,7 @@ void neon(int input[8][8], int output[8][8]) {
   int32x4_t C_row_6 = {C5, -C1, C7, C3};
   int32x4_t C_row_7 = {C7, -C5, C3, -C1};
 
-  int32x4_t tempVector;
+  int32x4_t tempVectorLow, tempVectorHigh, tempVector;
 
   int32x4_t prod;
 
@@ -32,8 +32,8 @@ void neon(int input[8][8], int output[8][8]) {
 
   for (i ^= i; !(i&8); i++) {
     ptr = input[i];
-    int32x4_t tempVectorLow = vld1q_s32(ptr);
-    int32x4_t tempVectorHigh = vld1q_s32(ptr+4);
+    tempVectorLow = vld1q_s32(ptr);
+    tempVectorHigh = vld1q_s32(ptr+4);
     tempVectorHigh = vrev64q_s32(tempVectorHigh);
     tempVectorHigh = vcombine_s32(vget_high_s32(tempVectorHigh), vget_low_s32(tempVectorHigh));
 
@@ -91,8 +91,8 @@ void neon(int input[8][8], int output[8][8]) {
 
   for(i ^= i; !(i&8); i++) {
     ptr = temp[i];
-    int32x4_t tempVectorLow = vld1q_s32(ptr);
-    int32x4_t tempVectorHigh = vld1q_s32(ptr+4);
+    tempVectorLow = vld1q_s32(ptr);
+    tempVectorHigh = vld1q_s32(ptr+4);
     tempVectorHigh = vrev64q_s32(tempVectorHigh);
     tempVectorHigh = vcombine_s32(vget_high_s32(tempVectorHigh), vget_low_s32(tempVectorHigh));
 
