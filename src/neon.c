@@ -11,7 +11,7 @@
 
 void neon(int input[8][8], int output[8][8]) {
   register int i;
-  register int32_t temp0, temp1, temp2, temp3;
+  register int32_t *ptr;
   int32_t temp[8][8];
 
   int32x4_t C_row_1 = {C2, C6, -C6, -C2};
@@ -22,6 +22,8 @@ void neon(int input[8][8], int output[8][8]) {
   int32x4_t C_row_6 = {C5, -C1, C7, C3};
   int32x4_t C_row_7 = {C7, -C5, C3, -C1};
 
+  int32x4_t tempVector;
+
   int32x4_t prod;
 
   int64x2_t pairwiseAddedOnce;
@@ -29,12 +31,13 @@ void neon(int input[8][8], int output[8][8]) {
   int64x1_t pairwiseAddedTwice;
 
   for (i ^= i; !(i&8); i++) {
-    temp0 = input[i][0] + input[i][7];
-    temp1 = input[i][1] + input[i][6];
-    temp2 = input[i][2] + input[i][5];
-    temp3 = input[i][3] + input[i][4];
+    ptr = input[i];
+    int32x4_t tempVectorLow = vld1q_s32(ptr);
+    int32x4_t tempVectorHigh = vld1q_s32(ptr+4);
+    tempVectorHigh = vrev64q_s32(tempVectorHigh);
+    tempVectorHigh = vcombine_s32(vget_high_s32(tempVectorHigh), vget_low_s32(tempVectorHigh));
 
-    int32x4_t tempVector = { temp0, temp1, temp2, temp3 };
+    tempVector = vaddq_s32(tempVectorLow, tempVectorHigh);
 
     pairwiseAddedOnce = vpaddlq_s32(tempVector);
     narrowed = vmovn_s64(pairwiseAddedOnce);
@@ -59,9 +62,7 @@ void neon(int input[8][8], int output[8][8]) {
     pairwiseAddedTwice = vpaddl_s32(narrowed);
     temp[6][i] = (int32_t)vget_lane_s64(pairwiseAddedTwice, 0);
 
-    int32x4_t tempVector1 = { input[i][7], input[i][6], input[i][5], input[i][4] };
-    tempVector1 = vshlq_n_s32(tempVector1, 1);
-    tempVector = vsubq_s32(tempVector, tempVector1);
+    tempVector = vsubq_s32(tempVectorLow, tempVectorHigh);
 
     prod = vmulq_s32(tempVector, C_row_4);
     pairwiseAddedOnce = vpaddlq_s32(prod);
@@ -89,12 +90,13 @@ void neon(int input[8][8], int output[8][8]) {
   }
 
   for(i ^= i; !(i&8); i++) {
-    temp0 = temp[i][0] + temp[i][7];
-    temp1 = temp[i][1] + temp[i][6];
-    temp2 = temp[i][2] + temp[i][5];
-    temp3 = temp[i][3] + temp[i][4];
+    ptr = temp[i];
+    int32x4_t tempVectorLow = vld1q_s32(ptr);
+    int32x4_t tempVectorHigh = vld1q_s32(ptr+4);
+    tempVectorHigh = vrev64q_s32(tempVectorHigh);
+    tempVectorHigh = vcombine_s32(vget_high_s32(tempVectorHigh), vget_low_s32(tempVectorHigh));
 
-    int32x4_t tempVector = { temp0, temp1, temp2, temp3 };
+    tempVector = vaddq_s32(tempVectorLow, tempVectorHigh);
 
     pairwiseAddedOnce = vpaddlq_s32(tempVector);
     narrowed = vmovn_s64(pairwiseAddedOnce);
@@ -119,9 +121,7 @@ void neon(int input[8][8], int output[8][8]) {
     pairwiseAddedTwice = vpaddl_s32(narrowed);
     output[i][6] = (int32_t)vget_lane_s64(pairwiseAddedTwice, 0) >> 18;
 
-    int32x4_t tempVector1 = { temp[i][7], temp[i][6], temp[i][5], temp[i][4] };
-    tempVector1 = vshlq_n_s32(tempVector1, 1);
-    tempVector = vsubq_s32(tempVector, tempVector1);
+    tempVector = vsubq_s32(tempVectorLow, tempVectorHigh);
 
     prod = vmulq_s32(tempVector, C_row_4);
     pairwiseAddedOnce = vpaddlq_s32(prod);
