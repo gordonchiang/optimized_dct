@@ -41,6 +41,9 @@ dct: ${DEPS}
 arm: ${DEPS}
 	arm-linux-gcc $(CFLAGS) $^ $(OUTPUT)
 
+testbench: ./src/testbench.c ./src/neon.c ./src/naive.c # arm only, tests NAIVE vs. NEON
+	arm-linux-gcc -Wall -static -mfloat-abi=softfp -mfpu=neon ./src/testbench.c ./src/neon.c ./src/naive.c -o testbench.exe
+
 .PHONY clean:
 clean:
 	-rm -rf ./**/*.o ./*.exe
