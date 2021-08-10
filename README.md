@@ -32,7 +32,7 @@ Example: `make arm ALGO=NEON`
 - Use `make arm` to compile the source code for ARM systems. An algorithm `ALGO` must be specified. *Note: a GCC compiler for ARM must be available on the system. `dct.exe` will be compiled.
 - Specify the make variable `ALGO` to select from the compilable DCT algorithm implementations: `NAIVE`, `UNOPTIMIZED`, `PIPELINED`, `UNROLLED`, or `NEON`. *Note: `NEON` will only run on ARM systems.
 
-- Run `make testbench` to compile a test bench that tests the `NEON` algorithm's DCT results against the results from the `NAIVE` algorithm. The `NEON` algorithm's results must be within 2 integers of `NAIVE`'s results. `testbench.exe` will be compiled. No make variables are required.
+- Run `make testbench` to compile a test bench that tests the `NEON` algorithm's DCT results against the results from the `NAIVE` algorithm. The `NEON` algorithm's results must be within 2 integers of `NAIVE`'s results. `testbench.exe` will be compiled and only runs on ARM systems. No make variables are required.
 
 ### Running
 
