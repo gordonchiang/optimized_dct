@@ -93,11 +93,11 @@ echo;
 # Run on local vm
 if [[ "$mode" == "-vm" ]]; then
   echo "Download dct.exe from remote @ seng440.ece.uvic.ca to local";
-  scp "$netlink_id"@seng440.ece.uvic.ca:/tmp/"$netlink_id"/dct.exe "$root_dir";
+  scp "$netlink_id"@seng440.ece.uvic.ca:/tmp/"$netlink_id"/*.exe "$root_dir";
   echo;
 
-  echo "Send dct.exe and test files to vm"; # You don't have to place files on vm to execute
-  scp -P 5555 -r ./dct.exe ./test root@localhost:~;
+  echo "Send *.exe and test files to vm"; # You don't have to place files on vm to execute
+  scp -P 5555 -r ./*.exe ./test root@localhost:~;
   echo "Files have been placed in vm";
   echo;
 

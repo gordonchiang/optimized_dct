@@ -9,6 +9,8 @@
 #define C6 98
 #define C7 50
 
+// This algorithm builds on top of UNROLLED
+// It replaces operations with vectorized operations (NEON ops)
 void neon(int input[8][8], int output[8][8]) {
   register int i;
   register int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;

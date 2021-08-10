@@ -1,14 +1,14 @@
 CFLAGS=-D${ALGO} -Wall -static -O3
 DEPS=./src/main.c ./src/dct.c
 
-ifdef S # generate assembly instead of executable
+ifdef S # generate assembly instead of executable, dev only
 	OUTPUT=-S
 endif
 ifndef S
 	OUTPUT=-o dct.exe
 endif
 
-ifdef G # compile with debugging option
+ifdef G # compile with debugging option, dev only
 	CLFAGS+=-g
 endif
 
@@ -40,6 +40,9 @@ dct: ${DEPS}
 
 arm: ${DEPS}
 	arm-linux-gcc $(CFLAGS) $^ $(OUTPUT)
+
+testbench: ./src/testbench.c ./src/neon.c ./src/naive.c # arm only, tests NAIVE vs. NEON
+	arm-linux-gcc -Wall -static -mfloat-abi=softfp -mfpu=neon ./src/testbench.c ./src/neon.c ./src/naive.c -o testbench.exe
 
 .PHONY clean:
 clean:
